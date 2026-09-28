@@ -1,0 +1,60 @@
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# Environments
+.venv/
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Jupyter & IPython
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+profile_default/
+ipython_config.py
+
+# Large Datasets & Archives (>50MB/100MB GitHub limit)
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+*.zip
+*.tar.gz
+*.parquet
+
+# Heavy Serialized Models & Arrays (>50MB/100MB GitHub limit)
+models/saved/*.pkl
+!models/saved/.gitkeep
+results/predictions/*.npy
+!results/predictions/.gitkeep
+*.npy
+
+# IDE & Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Temporary outputs & scratch scripts
+scratch/
+tmp/
