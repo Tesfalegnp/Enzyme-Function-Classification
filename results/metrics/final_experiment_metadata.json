@@ -1,6 +1,6 @@
 {
   "project": "Enzyme Function Classification (EC 1-6)",
-  "timestamp": "2026-09-28 20:29:04",
+  "timestamp": "2026-09-28 21:24:42",
   "random_seed": 42,
   "dataset": {
     "total_deduplicated_samples": 212273,
@@ -112,6 +112,7 @@
       "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/metrics/error_confusion_pairs.csv",
       "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/metrics/error_length_bins.csv",
       "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/metrics/feature_importance_top25.csv",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/metrics/final_experiment_metadata.json",
       "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/metrics/final_test_metrics.csv",
       "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/metrics/final_test_metrics.json"
     ],
