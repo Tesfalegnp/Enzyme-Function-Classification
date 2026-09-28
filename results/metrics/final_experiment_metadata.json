@@ -1,0 +1,153 @@
+{
+  "project": "Enzyme Function Classification (EC 1-6)",
+  "timestamp": "2026-09-28 20:29:04",
+  "random_seed": 42,
+  "dataset": {
+    "total_deduplicated_samples": 212273,
+    "train_samples": 148591,
+    "val_samples": 31841,
+    "test_samples": 31841,
+    "split_ratio": "70/15/15",
+    "classes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ]
+  },
+  "features": {
+    "aac_dim": 20,
+    "dpc_dim": 400,
+    "svd_dim": 128,
+    "combined_dim": 548,
+    "selected_k_dim": 500
+  },
+  "validation_results": {
+    "Random Forest": {
+      "Accuracy": 0.7858,
+      "Macro F1": 0.7939,
+      "MCC": 0.7189
+    },
+    "LightGBM": {
+      "Accuracy": 0.7378,
+      "Macro F1": 0.742,
+      "MCC": 0.6666
+    },
+    "LinearSVC": {
+      "Accuracy": 0.5575,
+      "Macro F1": 0.5351,
+      "MCC": 0.4399
+    },
+    "Hard Voting": {
+      "Accuracy": 0.7729,
+      "Macro F1": 0.7766,
+      "MCC": 0.7044
+    },
+    "Soft Voting": {
+      "Accuracy": 0.7543,
+      "Macro F1": 0.7599,
+      "MCC": 0.6747
+    },
+    "Stacking": {
+      "Accuracy": 0.7926,
+      "Macro F1": 0.7905,
+      "MCC": 0.7362
+    }
+  },
+  "test_results": {
+    "Random Forest": {
+      "Accuracy": 0.7883860431519111,
+      "Macro F1": 0.7945422143602575,
+      "MCC": 0.7221894927348096,
+      "AUPRC": 0.8713184274409831
+    },
+    "LightGBM": {
+      "Accuracy": 0.7395496372601363,
+      "Macro F1": 0.7428386006337213,
+      "MCC": 0.66884651845973,
+      "AUPRC": 0.8442189575751978
+    },
+    "LinearSVC": {
+      "Accuracy": 0.5565465908734022,
+      "Macro F1": 0.5359067596637835,
+      "MCC": 0.4401587137473699,
+      "AUPRC": 0.5916356828330841
+    },
+    "Hard Voting": {
+      "Accuracy": 0.7744103514336861,
+      "Macro F1": 0.7776122186882187,
+      "MCC": 0.7064645228508689,
+      "AUPRC": NaN
+    },
+    "Soft Voting": {
+      "Accuracy": 0.7587073270311862,
+      "Macro F1": 0.7645352607223138,
+      "MCC": 0.6806959535330581,
+      "AUPRC": 0.8447574780391456
+    },
+    "Stacking": {
+      "Accuracy": 0.797745045695801,
+      "Macro F1": 0.7941954423044694,
+      "MCC": 0.742593543530115,
+      "AUPRC": 0.9015895969423248
+    }
+  },
+  "artifact_paths": {
+    "models": [
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/models/saved/calibrated_svm.pkl",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/models/saved/lightgbm.pkl",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/models/saved/random_forest.pkl",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/models/saved/select_k_best.pkl",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/models/saved/stacking_meta_learner.pkl",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/models/saved/standard_scaler.pkl",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/models/saved/svm.pkl",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/models/saved/tripeptide_vectorizer.pkl",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/models/saved/truncated_svd.pkl"
+    ],
+    "metrics": [
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/metrics/ensemble_validation_comparison.csv",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/metrics/error_analysis.csv",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/metrics/error_confusion_pairs.csv",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/metrics/error_length_bins.csv",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/metrics/feature_importance_top25.csv",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/metrics/final_test_metrics.csv",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/metrics/final_test_metrics.json"
+    ],
+    "figures": [
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/figures/confusion_matrix_hard_voting.png",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/figures/confusion_matrix_lightgbm.png",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/figures/confusion_matrix_rf.png",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/figures/confusion_matrix_soft_voting.png",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/figures/confusion_matrix_stacking.png",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/figures/confusion_matrix_svm.png",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/figures/eda_class_and_length_distribution.png",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/figures/error_rate_by_sequence_length.png",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/figures/feature_importance_comparison.png",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/figures/feature_importance_lightgbm.png",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/figures/feature_importance_random_forest.png",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/figures/pr_curves_all_models.png",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/figures/pr_lightgbm.png",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/figures/pr_linearsvc.png",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/figures/pr_random_forest.png",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/figures/pr_soft_voting.png",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/figures/pr_stacking.png",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/figures/roc_curves_all_models.png",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/figures/roc_lightgbm.png",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/figures/roc_linearsvc.png",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/figures/roc_random_forest.png",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/figures/roc_soft_voting.png",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/figures/roc_stacking.png"
+    ],
+    "predictions": [
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/predictions/hard_voting_test_preds.npy",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/predictions/lgb_test_preds.npy",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/predictions/rf_test_preds.npy",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/predictions/soft_voting_test_preds.npy",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/predictions/stacking_test_preds.npy",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/predictions/svm_test_preds.npy",
+      "/home/hope/Projects/Task_2/Enzyme_Classification)_in_ML/results/predictions/y_test_true.npy"
+    ]
+  }
+}
