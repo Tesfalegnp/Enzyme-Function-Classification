@@ -1,0 +1,73 @@
+{
+  "stage": "Stage 5: Ensemble Learning",
+  "base_models": [
+    "Random Forest",
+    "LightGBM",
+    "LinearSVC"
+  ],
+  "validation_samples": 31841,
+  "feature_dim": 500,
+  "calibrated_svm": {
+    "method": "sigmoid (Platt scaling)",
+    "estimator": "LinearSVC(C=0.05, tol=1e-2, max_iter=2000, class_weight=\"balanced\", dual=False, random_state=42)",
+    "cv_strategy": "Stratified training partition split (zero test/val data used)",
+    "artifact": "models/saved/calibrated_svm.pkl"
+  },
+  "hard_voting": {
+    "voting": "majority rule",
+    "tie_breaker": "Random Forest priority (highest base val Macro F1)",
+    "metrics": {
+      "Accuracy": 0.7729,
+      "Macro F1": 0.7766,
+      "MCC": 0.7044,
+      "time_seconds": 4.74
+    }
+  },
+  "soft_voting": {
+    "voting": "equal weighted soft voting [1/3, 1/3, 1/3]",
+    "metrics": {
+      "Accuracy": 0.7543,
+      "Macro F1": 0.7599,
+      "MCC": 0.6747,
+      "time_seconds": 4.64
+    }
+  },
+  "stacking": {
+    "oof_folds": 3,
+    "stratified": true,
+    "random_state": 42,
+    "meta_learner": "LogisticRegression(class_weight=\"balanced\", max_iter=1000, random_state=42)",
+    "meta_feature_train_shape": [
+      148591,
+      18
+    ],
+    "meta_feature_val_shape": [
+      31841,
+      18
+    ],
+    "artifact": "models/saved/stacking_meta_learner.pkl",
+    "metrics": {
+      "Accuracy": 0.7926,
+      "Macro F1": 0.7905,
+      "MCC": 0.7362,
+      "time_seconds": 4.65
+    }
+  },
+  "base_model_val_metrics": {
+    "Random Forest": {
+      "Accuracy": 0.7858,
+      "Macro F1": 0.7939,
+      "MCC": 0.7189
+    },
+    "LightGBM": {
+      "Accuracy": 0.7378,
+      "Macro F1": 0.742,
+      "MCC": 0.6666
+    },
+    "LinearSVC": {
+      "Accuracy": 0.5575,
+      "Macro F1": 0.5351,
+      "MCC": 0.4399
+    }
+  }
+}
