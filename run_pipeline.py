@@ -224,9 +224,38 @@ def main():
     parser = argparse.ArgumentParser(description="Enzyme Function Classification Pipeline Runner")
     parser.add_argument("--stage", type=str, default="verify", choices=["verify", "prep", "features", "all"])
     parser.add_argument("--smoke-test", action="store_true", help="Run with small subset for pipeline testing")
+    parser.add_argument("--predict", type=str, default=None, help="Predict EC class for a protein amino-acid sequence")
+    parser.add_argument(
+        "--model",
+        type=str,
+        default="Stacking Ensemble",
+        choices=["Stacking Ensemble", "Random Forest", "LightGBM", "Soft Voting Ensemble", "Calibrated Linear SVM"],
+        help="Model architecture to use for CLI prediction",
+    )
     args = parser.parse_args()
 
     set_seed(RANDOM_SEED)
+
+    if args.predict:
+        from src.inference import predict_sequence
+        res = predict_sequence(args.predict, model_name=args.model)
+        if not res["success"]:
+            print(f"Error: {res['error']}")
+            sys.exit(1)
+        print("\n" + "=" * 60)
+        print(" ENZYME FUNCTION PREDICTION ")
+        print("=" * 60)
+        print(f"Sequence Length: {res['sequence_length']} aa")
+        print(f"Model:           {res['model_name']}")
+        print(f"Prediction:      {res['ec_title']}")
+        print(f"Mechanism:       {res['ec_reaction']}")
+        print(f"Confidence:      {res['confidence'] * 100:.2f}%")
+        print("-" * 60)
+        print("Class Probabilities:")
+        for ec_num, p in res["probabilities"].items():
+            print(f"  EC {ec_num}: {p * 100:.2f}%")
+        print("=" * 60 + "\n")
+        return
 
     if args.stage == "verify":
         run_verification()
@@ -248,3 +277,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
