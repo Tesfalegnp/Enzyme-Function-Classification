@@ -13,9 +13,24 @@ from src.inference import (
     EC_METADATA,
     EXAMPLE_SEQUENCES,
     clean_and_validate_sequence,
+    extract_sequence_features,
     load_inference_artifacts,
     predict_sequence,
 )
+
+# Optional SHAP Explainability imports
+try:
+    from src.shap_explainability import (
+        is_shap_available,
+        get_selected_feature_names,
+        explain_prediction_local,
+        plot_local_waterfall,
+        compute_global_shap_analysis,
+        load_representative_sample,
+    )
+    _SHAP_AVAILABLE_IN_APP = is_shap_available()
+except Exception:
+    _SHAP_AVAILABLE_IN_APP = False
 
 # Page configuration
 st.set_page_config(
@@ -341,6 +356,160 @@ if predict_clicked:
                 with st.expander("🔬 View Processed Amino-Acid Sequence"):
                     st.text(results["cleaned_sequence"])
                     st.caption(f"Total sequence length: {results['sequence_length']} standard amino acids.")
+
+                # -------------------------------------------------------------
+                # 3. Model Explainability (SHAP) — Optional Layer
+                # -------------------------------------------------------------
+                st.markdown("---")
+                st.markdown("#### 3. 🔬 Model Explainability (SHAP)")
+
+                if not _SHAP_AVAILABLE_IN_APP:
+                    st.info(
+                        "💡 **SHAP explainability is currently unavailable.**\n\n"
+                        "To enable local and global feature attribution (TreeExplainer), "
+                        "install the optional SHAP package: `pip install 'shap>=0.44.0'`."
+                    )
+                else:
+                    with st.expander("🔍 Explore Feature Contributions & Attributions (SHAP)", expanded=True):
+                        st.markdown(
+                            """
+                            <div style="background-color: #f8fafc; border-left: 4px solid #0284c7; padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 1.2rem;">
+                                <div style="font-weight: 600; color: #0f172a; font-size: 0.95rem;">Game-Theoretic Model Interpretability (TreeExplainer)</div>
+                                <div style="font-size: 0.84rem; color: #475569; margin-top: 0.2rem;">
+                                    Quantify the mathematical contribution of engineered biological features toward the prediction.
+                                    <em>Note: SHAP values indicate model decision utility, not biochemical causation.</em>
+                                </div>
+                            </div>
+                            """,
+                            unsafe_allow_html=True,
+                        )
+
+                        col_s1, col_s2, col_s3 = st.columns([2, 2, 2])
+                        with col_s1:
+                            shap_model_choice = st.selectbox(
+                                "Target Tree Architecture",
+                                options=["Random Forest", "LightGBM"],
+                                index=0 if selected_model == "Random Forest" else 1,
+                                help="TreeExplainer evaluates tree ensemble structures.",
+                            )
+                        with col_s2:
+                            shap_mode = st.selectbox(
+                                "Explainability Scope",
+                                options=["Local Prediction Explanation", "Global Feature Importance"],
+                                index=0,
+                                help="Local explains this individual sequence; Global analyzes the representative test population.",
+                            )
+                        with col_s3:
+                            if shap_mode == "Global Feature Importance":
+                                sample_n = st.selectbox(
+                                    "Representative Sample Size",
+                                    options=[50, 100, 200],
+                                    index=2,
+                                    help="Sample size from test set used for global SHAP aggregation.",
+                                )
+                            else:
+                                top_k_features = st.slider(
+                                    "Top Contributing Features",
+                                    min_value=5,
+                                    max_value=20,
+                                    value=10,
+                                    step=1,
+                                    help="Number of most influential features to display.",
+                                )
+
+                        shap_btn = st.button("⚡ Generate SHAP Explanation", key="btn_run_shap", type="secondary")
+
+                        if shap_btn:
+                            target_tree_model = (
+                                artifacts["random_forest"]
+                                if shap_model_choice == "Random Forest"
+                                else artifacts["lightgbm"]
+                            )
+                            feat_names = get_selected_feature_names(artifacts.get("selector"))
+
+                            if shap_mode == "Local Prediction Explanation":
+                                with st.spinner(f"Computing exact TreeSHAP attributions for {shap_model_choice}..."):
+                                    # Extract single sample features
+                                    X_sel, _ = extract_sequence_features(clean_seq, artifacts=artifacts)
+                                    local_res = explain_prediction_local(
+                                        model=target_tree_model,
+                                        X_single=X_sel,
+                                        predicted_ec=pred_ec,
+                                        feature_names=feat_names,
+                                        top_n=top_k_features,
+                                        model_name=shap_model_choice,
+                                    )
+
+                                st.markdown(
+                                    f"##### 🎯 Local Attribution for Predicted **EC {pred_ec} — {ec_meta['name']}**"
+                                )
+
+                                # Two-column layout: Supporting vs Opposing
+                                col_sup, col_opp = st.columns(2)
+                                with col_sup:
+                                    st.markdown(
+                                        f"<div style='color: #059669; font-weight: 600; margin-bottom: 0.4rem;'>✅ Features Supporting EC {pred_ec} (+SHAP)</div>",
+                                        unsafe_allow_html=True,
+                                    )
+                                    if local_res["supporting_features"]:
+                                        for item in local_res["supporting_features"][:top_k_features]:
+                                            st.markdown(
+                                                f"• **`{item['feature']}`** (+{item['shap_value']:.4f})<br>"
+                                                f"<span style='font-size: 0.8rem; color: #64748b;'>{item['description']}</span>",
+                                                unsafe_allow_html=True,
+                                            )
+                                    else:
+                                        st.caption("No positive feature attributions identified.")
+
+                                with col_opp:
+                                    st.markdown(
+                                        f"<div style='color: #dc2626; font-weight: 600; margin-bottom: 0.4rem;'>❌ Features Opposing EC {pred_ec} (-SHAP)</div>",
+                                        unsafe_allow_html=True,
+                                    )
+                                    if local_res["opposing_features"]:
+                                        for item in local_res["opposing_features"][:top_k_features]:
+                                            st.markdown(
+                                                f"• **`{item['feature']}`** ({item['shap_value']:.4f})<br>"
+                                                f"<span style='font-size: 0.8rem; color: #64748b;'>{item['description']}</span>",
+                                                unsafe_allow_html=True,
+                                            )
+                                    else:
+                                        st.caption("No negative feature attributions identified.")
+
+                                # Waterfall Chart
+                                st.markdown("###### Feature Contribution Divergence")
+                                fig_wf = plot_local_waterfall(local_res, top_n=top_k_features)
+                                st.pyplot(fig_wf)
+
+                            elif shap_mode == "Global Feature Importance":
+                                model_slug = "rf" if shap_model_choice == "Random Forest" else "lgb"
+                                summary_png = Path(f"results/figures/shap_{model_slug}_summary.png")
+                                bar_png = Path(f"results/figures/shap_{model_slug}_bar.png")
+                                csv_path = Path(f"results/metrics/shap_{model_slug}_feature_importance.csv")
+
+                                if not summary_png.exists() or not bar_png.exists():
+                                    with st.spinner(f"Computing global SHAP on representative sample (N={sample_n})..."):
+                                        X_samp, _ = load_representative_sample(sample_size=sample_n)
+                                        compute_global_shap_analysis(
+                                            model=target_tree_model,
+                                            X_sample=X_samp,
+                                            feature_names=feat_names,
+                                            model_name=shap_model_choice,
+                                        )
+
+                                st.markdown(f"##### 🌐 Global SHAP Importance Summary ({shap_model_choice})")
+                                col_g1, col_g2 = st.columns(2)
+                                with col_g1:
+                                    if bar_png.exists():
+                                        st.image(str(bar_png), caption=f"Global Mean |SHAP| Ranking ({shap_model_choice})", use_container_width=True)
+                                with col_g2:
+                                    if summary_png.exists():
+                                        st.image(str(summary_png), caption=f"Beeswarm Feature Effects ({shap_model_choice})", use_container_width=True)
+
+                                if csv_path.exists():
+                                    with st.expander("📊 View Top 20 Global SHAP Feature Table"):
+                                        df_imp = pd.read_csv(csv_path)
+                                        st.dataframe(df_imp, use_container_width=True)
 
 # Footer
 st.markdown("---")

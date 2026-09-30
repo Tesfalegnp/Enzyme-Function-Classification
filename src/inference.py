@@ -65,7 +65,7 @@ EC_METADATA: Dict[int, Dict[str, str]] = {
 
 # Verified benchmark sample sequences from the SwissProt-EC test set
 EXAMPLE_SEQUENCES: Dict[str, Dict[str, Any]] = {
-    "EC 1 — Oxidoreductase (Human L-lactate dehydrogenase B-like test sample)": {
+    "EC 1 — Oxidoreductase (Human L-lactate dehydrogenase test sample)": {
         "ec": 1,
         "name": "Oxidoreductases",
         "source": "SwissProt-EC held-out test partition",
@@ -77,6 +77,17 @@ EXAMPLE_SEQUENCES: Dict[str, Dict[str, Any]] = {
             "GFHPPIDDVQGSFQPTVVSLVHGYLNSSYFGFPDPKLFPFANILTTDFPSFFCTLDNICPVNISASFRRKQPQEAAVWR"
             "VQSPKPLFRTQLKTLFRSYYSVQTAEWQAHPLYGSRPTLPRFALHDQLFYLNALEWAASSVEVMAVAAKNVALLAYNRW"
             "YQDLDKIDQKDLMHKVKTEL"
+        ),
+    },
+    "EC 2 — Transferase (Bacterial transferase test sample)": {
+        "ec": 2,
+        "name": "Transferases",
+        "source": "SwissProt-EC held-out test partition",
+        "sequence": (
+            "MVEPMNWISEVVRPRIKTLFKRETPENLWVKCPDTGQMVFHKEVEQNHWVIPGSEHHLKMSATARLKMMFDEGTWIDVP"
+            "LPEVPADPLKFRDEKRYVDRLKEARAKTGMPDAFKIGFGRVGSLPMTIAAQEFGFMAGSLGMAGGEAFVRGAETALEKR"
+            "TPYVLFAASGGARMQEGILSLMQMPRTTVAVRRLRAARLPYIVVLTNPTTGGVTASYAMLGDVHLAEPGALICFAGPRV"
+            "IEQTIREKLPDGFQRAEYLREHGMVDQVVHRHQLKETISRLCGLLMDVRRTPQPGTAPEPTTPEPLPNAA"
         ),
     },
     "EC 3 — Hydrolase (Bacterial esterase/hydrolase test sample)": {
@@ -93,6 +104,17 @@ EXAMPLE_SEQUENCES: Dict[str, Dict[str, Any]] = {
             "AQTAAGYYIVGNCP"
         ),
     },
+    "EC 4 — Lyase (Bacterial lyase test sample)": {
+        "ec": 4,
+        "name": "Lyases",
+        "source": "SwissProt-EC held-out test partition",
+        "sequence": (
+            "MSRLQNRFAELKAENRAALVTFVTAGDPDYATSLSILKGLPEAGADVIELGMPFTDPMADGPAIQLANIRALAGKQGMQ"
+            "QTLQMVREFRAGNQSTPLVLMGYYNPIFVYGVERFISDAKEAGVDGLIVVDLPPEHNDELCEPAQSAGLDFIRLTTPTT"
+            "DDDRLPTVLAGSSGFVYYVSVAGVTGAGAATLDHVEEAVARLRRHTDLPVCIGFGIRTPEHAAEVAKRAEGAVVGSALI"
+            "DKIAEAKSPQQAIDGVLGLCRELAEGVRGARR"
+        ),
+    },
     "EC 5 — Isomerase (Triosephosphate isomerase test sample)": {
         "ec": 5,
         "name": "Isomerases",
@@ -102,6 +124,16 @@ EXAMPLE_SEQUENCES: Dict[str, Dict[str, Any]] = {
             "SARMILAVGCSSVIIGHSERRQYFGETNATVNLRIKKALSEGLNVILCVGETLAERESGVMETVISSQVREGLDGIIDI"
             "SAIVIAYEPVWAIGTGKTASSAQAEEVHLFIRTLVTGLYGQTASEKVRIQYGGSVKPSNAAELFAMPNIDGGLIGGASL"
             "NADDFAAIVKAASV"
+        ),
+    },
+    "EC 6 — Ligase (Bacterial synthetase/ligase test sample)": {
+        "ec": 6,
+        "name": "Ligases",
+        "source": "SwissProt-EC held-out test partition",
+        "sequence": (
+            "MTLLYEGKAKRIFSTNQENELRVEYKDEVTAGNGAKKDTMAGKGRLNNQITSIIFKYLQENGIESHFIKQLSETEQLVK"
+            "PVKIIPLEVVVRNIASGSITKRLGFENGEVFRESLVEFFYKNDALNDPLITDDHIKLLNIATDKDIETLKTKALEINQV"
+            "LKKLMDAMNLKLVDFKIEFGKTETGQILLADEISPDTCRIWDKATNANFDKDVYRNNTGSLIETYQIFLNKLEDLK"
         ),
     },
 }

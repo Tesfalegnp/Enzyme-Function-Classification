@@ -176,7 +176,44 @@ Selected key figures generated during validation and test evaluation:
 
 ---
 
-## 💻 8. Interactive Web UI (Streamlit)
+## 🔬 8. Optional Model Explainability (SHAP)
+
+To advance the project's analytical depth and presentation value for evaluators, an optional **SHAP (SHapley Additive exPlanations)** interpretability layer is integrated.
+
+> [!NOTE]
+> **Optional Layer**: SHAP explainability is strictly additive and modular. The core prediction pipeline, model artifacts, and evaluation benchmarks remain completely functional without requiring SHAP.
+
+### Why SHAP?
+While native Gini importance indicates *how frequently* or *how effectively* a feature splits nodes across decision trees, SHAP provides **theoretically grounded game-theoretic attributions** based on Shapley values. This answers two vital questions:
+1. **Global Attribution**: Which engineered biological features contribute most consistently across a representative sample of sequences?
+2. **Local Attribution**: Why did the classifier predict a specific EC class for an individual input sequence?
+
+### Supported Tree Architectures
+- **Random Forest**: Analyzed via `shap.TreeExplainer(random_forest)`.
+- **LightGBM**: Analyzed via `shap.TreeExplainer(lightgbm)`.
+
+### Global Explanations & Representative Sampling
+Evaluating exact TreeSHAP values across all $31,841$ held-out test sequences with deep trees ($D=20$) is computationally prohibitive. Instead, a **stratified representative sample** ($N=200$, random seed $42$) is utilized for global population analysis:
+- **SHAP Summary (Beeswarm) Plot**: Visualizes both feature importance and the directional effect (positive vs. negative impact on log-odds) for high/low feature values.
+- **SHAP Bar Importance Plot**: Visualizes mean absolute SHAP values ($\text{mean}(|\text{SHAP}|)$) ranking the top 20 influential features.
+
+Saved outputs:
+- Figures: [`results/figures/shap_rf_summary.png`](results/figures/shap_rf_summary.png), [`results/figures/shap_rf_bar.png`](results/figures/shap_rf_bar.png), [`results/figures/shap_lgb_summary.png`](results/figures/shap_lgb_summary.png), [`results/figures/shap_lgb_bar.png`](results/figures/shap_lgb_bar.png)
+- Tabular Metrics: [`results/metrics/shap_rf_feature_importance.csv`](results/metrics/shap_rf_feature_importance.csv), [`results/metrics/shap_lgb_feature_importance.csv`](results/metrics/shap_lgb_feature_importance.csv)
+
+### Local Sequence Explanations (Streamlit App)
+In the interactive demonstration UI ([`app.py`](app.py)), users can inspect individual sequence predictions:
+- Displays **Features Supporting EC $k$** (positive SHAP pushing probability toward the predicted class).
+- Displays **Features Opposing EC $k$** (negative SHAP pushing probability away from the predicted class).
+- Renders an interactive **Waterfall / Divergence Plot** decomposing the decision boundary shift.
+
+### Methodological & Scientific Disclaimer
+- **Mathematical Attribution $\neq$ Biological Causation**: SHAP values indicate how the trained model's decision boundaries utilize numerical k-mer frequencies and SVD embeddings. They do **not** prove biochemical causation, catalytic active site binding, or wet-lab reaction mechanisms.
+- **SVD Embeddings**: Features labeled `SVD_Comp_k` represent low-rank projections of sparse tripeptide k-mer frequency distributions, not isolated physical structural domains.
+
+---
+
+## 💻 9. Interactive Web UI (Streamlit)
 
 A scientific single-page web application is provided for real-time testing and demonstration.
 
@@ -195,7 +232,7 @@ Open `http://localhost:8501` in your browser.
 
 ---
 
-## 🛠️ 9. Installation & Setup
+## 🛠️ 10. Installation & Setup
 
 ### Prerequisites
 - Python 3.10+ (tested on Python 3.10–3.14 on Linux/macOS/Windows)
@@ -218,14 +255,14 @@ pip install -r requirements.txt
 
 ---
 
-## ⚡ 10. Usage & Execution Commands
+## ⚡ 11. Usage & Execution Commands
 
 ### 1. Run the Interactive Web UI
 ```bash
 streamlit run app.py
 ```
 
-### 2. Run the Automated Test Suite (23 Unit Tests)
+### 2. Run the Automated Test Suite (33 Unit Tests)
 ```bash
 pytest -v
 ```
@@ -255,14 +292,14 @@ jupyter lab notebooks/enzyme_function_classification.ipynb
 
 ---
 
-## 📂 11. Project Directory Structure
+## 📂 12. Project Directory Structure
 
 ```text
 Enzyme_Classification)_in_ML/
 ├── app.py                     # Interactive Streamlit Web UI application
 ├── run_pipeline.py            # CLI pipeline runner with --stage and --predict
 ├── pytest.ini                 # Pytest configuration with automatic pythonpath
-├── requirements.txt           # Pinned runtime and UI dependencies
+├── requirements.txt           # Pinned runtime, UI, and optional SHAP dependencies
 ├── LICENSE                    # MIT License
 ├── README.md                  # Comprehensive project documentation
 │
@@ -279,13 +316,15 @@ Enzyme_Classification)_in_ML/
 │   ├── evaluation.py          # Macro F1, MCC, AUPRC, Accuracy, error analysis
 │   ├── visualization.py       # Publication plots (EDA, Confusion Matrix, ROC, PR)
 │   ├── inference.py           # Reusable, zero-training inference engine
+│   ├── shap_explainability.py # Optional TreeExplainer interpretability (local & global)
 │   └── utils.py               # Timers, deterministic seeding, serialization helpers
 │
 ├── tests/
 │   ├── test_data.py           # 5 tests: data cleaning, deduplication, splitting
 │   ├── test_features.py       # 4 tests: AAC, DPC, TPC + SVD, SelectKBest
 │   ├── test_models.py         # 4 tests: baselines, calibration, ensembles, metrics
-│   └── test_inference.py      # 10 tests: validation, feature extraction, predictions
+│   ├── test_inference.py      # 10 tests: validation, feature extraction, predictions
+│   └── test_shap_explainability.py # 10 tests: TreeExplainer, multiclass, local/global attribution
 │
 ├── models/
 │   └── saved/                 # Serialized model checkpoints & preprocessors
@@ -302,8 +341,8 @@ Enzyme_Classification)_in_ML/
 │       └── ensemble_metadata.json
 │
 ├── results/
-│   ├── figures/               # 23 generated publication figures (300 DPI)
-│   ├── metrics/               # Evaluation CSV & JSON metric summaries
+│   ├── figures/               # Generated publication figures & SHAP visualizations
+│   ├── metrics/               # Evaluation CSV & JSON metric summaries & SHAP rankings
 │   └── predictions/           # Test set prediction arrays (.npy)
 │
 ├── data/
@@ -316,7 +355,7 @@ Enzyme_Classification)_in_ML/
 
 ---
 
-## ⚠️ 12. Scientific Limitations
+## ⚠️ 13. Scientific Limitations
 
 1. **Top-Level EC Prediction Only**: This system predicts the primary enzyme category (EC 1–6). It does not predict sub-classes, sub-sub-classes, or catalytic serial numbers (e.g., predicting EC 1 rather than EC 1.1.1.1).
 2. **Primary Sequence Dependency**: Predictions are made solely from 1D primary amino-acid composition and short k-mer frequencies; 3D tertiary conformations, active site pockets, cofactor binding, and quaternary structures are not explicitly modeled.
